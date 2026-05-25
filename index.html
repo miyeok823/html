@@ -12,33 +12,44 @@
       margin:0;
       padding:0;
       box-sizing:border-box;
+      font-family:Arial;
     }
 
     body{
       background:#F4F7FA;
-      font-family:Arial, sans-serif;
+      padding:40px;
     }
 
-    .header{
-      background:#1F4E78;
-      color:white;
-      padding:20px;
+    h1{
       text-align:center;
-      font-size:28px;
-      font-weight:bold;
+      margin-bottom:40px;
+      color:#1F4E78;
     }
 
-    .sub{
-      text-align:center;
-      margin:15px;
-      color:#666;
+    .dashboard{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+      gap:20px;
     }
 
-    iframe{
-      width:100%;
-      height:90vh;
-      border:none;
+    .card{
       background:white;
+      padding:30px;
+      border-radius:20px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+      text-align:center;
+    }
+
+    .title{
+      font-size:18px;
+      color:#666;
+      margin-bottom:15px;
+    }
+
+    .value{
+      font-size:32px;
+      font-weight:bold;
+      color:#1F4E78;
     }
 
   </style>
@@ -46,17 +57,44 @@
 
 <body>
 
-  <div class="header">
-    📊 재고 및 판매 대시보드
+  <h1>📊 재고 및 판매 대시보드</h1>
+
+  <div class="dashboard">
+
+    <div class="card">
+      <div class="title">총 판매 건수</div>
+      <div class="value" id="sales">0</div>
+    </div>
+
+    <div class="card">
+      <div class="title">총 매출액</div>
+      <div class="value" id="revenue">0</div>
+    </div>
+
+    <div class="card">
+      <div class="title">위험 재고 수</div>
+      <div class="value" id="danger">0</div>
+    </div>
+
   </div>
 
-  <div class="sub">
-    실시간 재고 · 판매 · 입출고 현황
-  </div>
+  <script>
 
-  <iframe
-    src="https://script.google.com/macros/s/AKfycbyyteAMvWEN__H4h74v_7qWgt7P4nRsTilIbLC70U7nN4X0r_geZwr8agEhjirEavc2/exec">
-  </iframe>
+    fetch("여기에_새_exec_URL_넣기")
+      .then(response => response.json())
+      .then(data => {
+
+        document.getElementById("sales").innerText =
+          data.totalSales;
+
+        document.getElementById("revenue").innerText =
+          data.totalRevenue.toLocaleString() + "원";
+
+        document.getElementById("danger").innerText =
+          data.dangerStock + "개";
+      });
+
+  </script>
 
 </body>
 </html>
