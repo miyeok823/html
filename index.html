@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>📊 재고 대시보드</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
 
@@ -30,6 +33,7 @@
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
       gap:20px;
+      margin-bottom:40px;
     }
 
     .card{
@@ -52,7 +56,21 @@
       color:#1F4E78;
     }
 
+    .charts{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:30px;
+    }
+
+    .chart-box{
+      background:white;
+      padding:20px;
+      border-radius:20px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    }
+
   </style>
+
 </head>
 
 <body>
@@ -78,10 +96,24 @@
 
   </div>
 
+  <div class="charts">
+
+    <div class="chart-box">
+      <canvas id="salesChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <canvas id="stockChart"></canvas>
+    </div>
+
+  </div>
+
   <script>
 
-    fetch("https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnS8KR_32k59Ft-DHpxR-y5kjofVjjXI5ssQoAfl1YV7wD7qYrLg1C3kEoDYVQ0-5m0O-TVBbHzZtnhvhFL7vYckecwEe8LnjGHGgUAbmwQUqltygoLl1r96bW3eRBrNXzf36alsF2l0BqraQSSbJog9aFC8lngqS_X8mKz87lyTV85AX8-I6yFCUdQTOTmsUYZdgXZDNq-Tlu0JvJhTMemGPkSjG5kTsYrSvh52E8BIj2hA9REBtRzsD9MTieDvCfyF4mrbGqfLVeQcNERvFdpqtZ1DkQ&lib=MfY3J2-2_rBpRTqCPz8JdbEwZ7ki6rcAH")
+    fetch("https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnSTrvQutoofrucYUx_YWZVFKeFuVWr7UPJa4XXYa9DP_MA-uSldCnBelxad-5hyx9ui_6j-ehMsvlY52cIixrQDGqJrE2XbMV5vwVxvTJIZeid84BC0GSrK9btKDWMBrEoq2k6jQzzT9BwhfdMEJjtmEQbxoplZXeAlkZFn38Jh1U3XqUExPttSVp_doWHqodCTWMkzj-c1fG_4Wa0Tr_0Baglss1EUAArODN5cD0DxzMw1QcXbEKIgbpKzqOVo0W113r8Wp3DTivybXIwhnC_ONMbC0Q&lib=MfY3J2-2_rBpRTqCPz8JdbEwZ7ki6rcAH")
+
       .then(response => response.json())
+
       .then(data => {
 
         document.getElementById("sales").innerText =
@@ -92,6 +124,42 @@
 
         document.getElementById("danger").innerText =
           data.dangerStock + "개";
+
+        // 카테고리별 매출 차트
+        new Chart(document.getElementById('salesChart'), {
+
+          type: 'bar',
+
+          data: {
+
+            labels: data.categoryLabels,
+
+            datasets: [{
+              label: '카테고리별 매출',
+              data: data.categoryValues
+            }]
+          }
+        });
+
+        // 재고 상태 차트
+        new Chart(document.getElementById('stockChart'), {
+
+          type: 'pie',
+
+          data: {
+
+            labels: ['안전 재고', '위험 재고'],
+
+            datasets: [{
+
+              data: [
+                data.safeStock,
+                data.dangerStock
+              ]
+            }]
+          }
+        });
+
       });
 
   </script>
